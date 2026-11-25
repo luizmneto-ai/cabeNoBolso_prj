@@ -81,8 +81,8 @@ Os dois comandos devem mostrar a versão 25.
 Clone o repositório:
 
 ```bash
-git clone https://github.com/USUARIO/REPOSITORIO.git   # TODO: link real
-cd REPOSITORIO
+git clone https://github.com/luizmneto-ai/cabeNoBolso_prj.git
+cd cabeNoBolso_prj
 ```
 
 ---
