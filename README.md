@@ -26,14 +26,15 @@ Atividade final da disciplina **Programação Orientada a Objetos (N685)** — U
 
 ## Equipe
 
-<!-- TODO: preencher com os dados reais da equipe (4 a 6 integrantes) -->
+<!-- TODO: preencher a coluna "Principais contribuições" de cada integrante -->
 
 | Integrante | Matrícula | Principais contribuições |
 |---|---|---|
-| Nome completo 1 | 0000000 | Ex.: modelo e cálculos do rateio |
-| Nome completo 2 | 0000000 | Ex.: interface Swing |
-| Nome completo 3 | 0000000 | Ex.: controlador e integração MVC |
-| Nome completo 4 | 0000000 | Ex.: persistência e testes |
+| Luiz Monteiro Neto | 2642512 | |
+| Samuel Diogenes Silva Holanda | 2641631 | |
+| Letícia Gomes da Silva | 2630010 | |
+| João Pedro Queiroz Ribeiro | 2641620 | |
+| Vinícius Ferreira Cavalcante | 2642541 | |
 
 ---
 
