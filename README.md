@@ -4,7 +4,7 @@ Aplicação desktop em **Java Swing** para planejar as despesas de um passeio ou
 
 Atividade final da disciplina **Programação Orientada a Objetos (N685)** — Universidade de Fortaleza (Unifor), 2026.2.
 
-> **Relatório técnico:** enviado em PDF pelo AVA por todos os integrantes. <!-- TODO: opcional — colocar também o PDF em docs/relatorio.pdf -->
+> **Relatório técnico:** [docs/relatorio.pdf](docs/relatorio.pdf) — também enviado em PDF pelo AVA por todos os integrantes.
 
 ---
 
@@ -278,4 +278,5 @@ O simulador mantém as despesas essenciais e testa as combinações de opcionais
 - Os requisitos seguem o enunciado da disciplina e a trilha do Prof. Tulio. O código-fonte e os diagramas UML foram gerados com apoio de IA generativa (Claude, Anthropic) a partir desses requisitos, e o simulador de alternativas também foi desenvolvido com participação de IA; a equipe revisou, executou e testou o código e produziu as evidências em `docs/evidencias/`. O ChatGPT apoiou a revisão do texto do relatório.
 - Material da disciplina: trilha de apoio de POO (revisões 01 a 15), Prof. Tulio Rodrigues Ribeiro.
 - Oracle. *The Java Tutorials* e documentação da API Java SE 25: Swing, Collections, Exceptions, Serialization.
-- <!-- TODO: outras fontes usadas, no padrão ABNT no relatório -->
+- Universidade de Fortaleza. *N685 – Programação Orientada a Objetos*: material de leitura dos percursos 1 a 4.
+- As referências completas, no padrão ABNT, estão na seção "Referências" do [relatório técnico](docs/relatorio.pdf).
