@@ -62,9 +62,9 @@ Atividade final da disciplina **Programação Orientada a Objetos (N685)** — U
 
 | Item | Versão / observação |
 |---|---|
-| **JDK** | 25 (LTS) <!-- TODO: confirmar a versão usada pela equipe --> |
+| **JDK** | 25 (LTS) |
 | **Interface gráfica** | Java Swing (já incluído no JDK) |
-| **Dependências externas** | Nenhuma <!-- TODO: se usarem JUnit para testes automatizados, informar aqui --> |
+| **Dependências externas** | Nenhuma (os testes usam a classe `VerificacaoModelo`, sem JUnit) |
 | **IDE (opcional)** | IntelliJ IDEA, Eclipse ou NetBeans |
 | **Sistema** | Windows, macOS ou Linux com ambiente gráfico |
 
@@ -100,7 +100,8 @@ cd cabeNoBolso_prj
 │       │   ├── Participante.java
 │       │   ├── Despesa.java           # classe abstrata
 │       │   ├── DespesaFixa.java
-│       │   └── DespesaPorPessoa.java
+│       │   ├── DespesaPorPessoa.java
+│       │   └── SimuladorAlternativas.java  # objetivo extra: melhor combinação de opcionais
 │       ├── view/                      # VISÃO: telas Swing
 │       │   └── TelaPrincipal.java
 │       ├── controller/                # CONTROLADOR: liga eventos da tela ao modelo
@@ -109,7 +110,7 @@ cd cabeNoBolso_prj
 │       │   ├── RepositorioPlanejamento.java   # interface salvar/carregar
 │       │   └── RepositorioArquivo.java        # serialização de objetos
 │       └── teste/
-│           └── VerificacaoModelo.java  # caso de referência + testes 2 a 7 pelo terminal
+│           └── VerificacaoModelo.java  # caso de referência, testes 2 a 7 e simulador pelo terminal
 ├── docs/
 │   ├── uml/diagrama-classes.png       # diagrama de classes atualizado
 │   └── evidencias/                    # capturas de tela dos testes
@@ -229,19 +230,21 @@ Dados obrigatórios da seção 4 do enunciado.
 
 | # | Cenário | Como executar | Resultado esperado | Obtido | Evidência |
 |---|---|---|---|---|---|
-| 1 | **Caso de referência** | Roteiro acima | Ana e Carla R$ 75,00 (excedem R$ 5,00), Bruno R$ 60,00 (dentro); total R$ 210,00 | ✅ Conforme o esperado | [participantes](docs/evidencias/swing-participantes.png), [despesas](docs/evidencias/swing-despesas.png), [resumo](docs/evidencias/swing-resumo.png) |
-| 2 | **Centavos no rateio** | Despesa fixa de R$ 100,00 para os códigos 1, 2 e 3 | R$ 33,34 / R$ 33,33 / R$ 33,33; soma R$ 100,00 | ✅ Conforme o esperado | [teste-2-centavos.png](docs/evidencias/teste-2-centavos.png) |
-| 3 | **Entrada ou vínculo inválido** | Tentar salvar despesa sem participantes, com valor negativo ou com campo vazio | Mensagem de erro; dados anteriores inalterados | ✅ Conforme o esperado | [teste-3-vinculo-invalido.png](docs/evidencias/teste-3-vinculo-invalido.png) |
-| 4 | **Alteração de orçamento** | No caso de referência, alterar o orçamento de Ana para R$ 80,00 | Ana continua com R$ 75,00, agora dentro do limite | ✅ Conforme o esperado | [teste-4-alteracao-orcamento.png](docs/evidencias/teste-4-alteracao-orcamento.png) |
-| 5 | **Exclusão de despesa** | No caso original, excluir "Atividade recreativa" | R$ 60,00 por pessoa; total R$ 180,00 | ✅ Conforme o esperado | [teste-5-exclusao-despesa.png](docs/evidencias/teste-5-exclusao-despesa.png) |
-| 6 | **Salvar e reiniciar** | Salvar o caso, fechar e abrir a aplicação, carregar | Todos os dados, vínculos e resultados recuperados, sem duplicar registros | ✅ Conforme o esperado | [teste-6-salvar-reiniciar.png](docs/evidencias/teste-6-salvar-reiniciar.png) (arquivo usado: [teste-6-planejamento.dat](docs/evidencias/teste-6-planejamento.dat)) |
-| 7 | **Problema no arquivo** | Carregar arquivo inexistente ou inválido (ex.: um `.txt` renomeado para `.dat`) | Mensagem clara; o planejamento em uso é preservado; é possível iniciar um planejamento vazio | ✅ Conforme o esperado | [teste-7-arquivo-invalido.png](docs/evidencias/teste-7-arquivo-invalido.png) (arquivo usado: [arquivo-invalido.dat](docs/evidencias/arquivo-invalido.dat)) |
+| 1 | **Caso de referência** | Roteiro acima | Ana e Carla R$ 75,00 (excedem R$ 5,00), Bruno R$ 60,00 (dentro); total R$ 210,00 | ✅ Conforme o esperado | [participantes](docs/evidencias/swing-participantes.png), [despesas](docs/evidencias/swing-despesas.png), [resumo](docs/evidencias/swing-resumo.png); [01.png](docs/evidencias/01.png) |
+| 2 | **Centavos no rateio** | Despesa fixa de R$ 100,00 para os códigos 1, 2 e 3 | R$ 33,34 / R$ 33,33 / R$ 33,33; soma R$ 100,00 | ✅ Conforme o esperado | [teste-2-centavos.png](docs/evidencias/teste-2-centavos.png); [02.png](docs/evidencias/02.png) |
+| 3 | **Entrada ou vínculo inválido** | Tentar salvar despesa sem participantes, com valor negativo ou com campo vazio | Mensagem de erro; dados anteriores inalterados | ✅ Conforme o esperado | [teste-3-vinculo-invalido.png](docs/evidencias/teste-3-vinculo-invalido.png); [03.png](docs/evidencias/03.png) |
+| 4 | **Alteração de orçamento** | No caso de referência, alterar o orçamento de Ana para R$ 80,00 | Ana continua com R$ 75,00, agora dentro do limite | ✅ Conforme o esperado | [teste-4-alteracao-orcamento.png](docs/evidencias/teste-4-alteracao-orcamento.png); [04.png](docs/evidencias/04.png) |
+| 5 | **Exclusão de despesa** | No caso original, excluir "Atividade recreativa" | R$ 60,00 por pessoa; total R$ 180,00 | ✅ Conforme o esperado | [teste-5-exclusao-despesa.png](docs/evidencias/teste-5-exclusao-despesa.png); [05.png](docs/evidencias/05.png) |
+| 6 | **Salvar e reiniciar** | Salvar o caso, fechar e abrir a aplicação, carregar | Todos os dados, vínculos e resultados recuperados, sem duplicar registros | ✅ Conforme o esperado | [teste-6-salvar-reiniciar.png](docs/evidencias/teste-6-salvar-reiniciar.png); [06.png](docs/evidencias/06.png) (arquivo usado: [teste-6-planejamento.dat](docs/evidencias/teste-6-planejamento.dat)) |
+| 7 | **Problema no arquivo** | Carregar arquivo inexistente ou inválido (ex.: um `.txt` renomeado para `.dat`) | Mensagem clara; o planejamento em uso é preservado; é possível iniciar um planejamento vazio | ✅ Conforme o esperado | [teste-7-arquivo-invalido.png](docs/evidencias/teste-7-arquivo-invalido.png); [07.png](docs/evidencias/07.png) (arquivo usado: [arquivo-invalido.dat](docs/evidencias/arquivo-invalido.dat)) |
 
-A verificação automática abaixo também confirma os sete cenários: **43 verificações OK, 0 falharam** — saída completa em [resultado-testes.txt](docs/evidencias/resultado-testes.txt) e capturas do terminal em [teste-parte-1.png](docs/evidencias/teste-parte-1.png) e [teste-parte-2.png](docs/evidencias/teste-parte-2.png).
+As capturas `teste-*` e `01` a `07` foram feitas em execuções diferentes e mostram variações de cada cenário (por exemplo, no teste 3: despesa sem participante e valor negativo).
+
+A verificação automática abaixo também confirma os sete cenários e o simulador do objetivo extra: **57 verificações OK, 0 falharam**. Saída completa em [resultado-testes.txt](docs/evidencias/resultado-testes.txt). As capturas do terminal [teste-parte-1.png](docs/evidencias/teste-parte-1.png) e [teste-parte-2.png](docs/evidencias/teste-parte-2.png) são de uma execução anterior aos testes do simulador (43 verificações).
 
 ### Verificação automática do modelo (terminal)
 
-A classe `cabenobolso.teste.VerificacaoModelo` executa o caso de referência e os testes 2 a 7 sem a interface gráfica e imprime `[OK]` ou `[FALHOU]` em cada verificação:
+A classe `cabenobolso.teste.VerificacaoModelo` executa o caso de referência, os testes 2 a 7 e os cenários do simulador sem a interface gráfica e imprime `[OK]` ou `[FALHOU]` em cada verificação:
 
 ```bash
 javac -d out $(find src -name "*.java")
@@ -258,7 +261,7 @@ java -cp out cabenobolso.teste.VerificacaoModelo --gerar-dados
 
 ## Objetivo extra — simulador de alternativas
 
-Na aba *Resumo, clique em **Simular alternativas*. Digite uma prioridade para cada despesa, na ordem exibida. Use 0 para despesas essenciais e um número inteiro positivo para opcionais. O simulador aceita até 10 despesas opcionais.
+Na aba **Resumo**, clique em **Simular alternativas**. Digite uma prioridade para cada despesa, na ordem exibida. Use 0 para despesas essenciais e um número inteiro positivo para opcionais. O simulador aceita até 10 despesas opcionais.
 
 O simulador mantém as despesas essenciais e testa as combinações de opcionais. Entre as que cabem no orçamento de todos, escolhe a de maior soma de prioridades. Em caso de empate, mantém a primeira combinação válida encontrada com essa pontuação. A simulação preserva o planejamento original.
 
