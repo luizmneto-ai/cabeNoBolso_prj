@@ -82,7 +82,7 @@ public class TelaPrincipal {
     private final DefaultTableModel modeloResumo = tabelaSomenteLeitura("Pessoa");
     private final JTable tabelaResumo = new JTable(modeloResumo);
     private final JLabel custoTotal = new JLabel("Custo total: R$ 0,00");
-
+    private final JButton simularAlternativas = new JButton("Simular alternativas");    
     // ----- rodapé -----
     private final JLabel mensagem = new JLabel("Cadastre os participantes e depois as despesas.");
 
@@ -183,7 +183,10 @@ public class TelaPrincipal {
         JPanel aba = new JPanel(new BorderLayout(8, 8));
         aba.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
         aba.add(new JScrollPane(tabelaResumo), BorderLayout.CENTER);
-        aba.add(custoTotal, BorderLayout.SOUTH);
+        JPanel rodapeResumo = new JPanel(new BorderLayout(8, 0));
+        rodapeResumo.add(custoTotal, BorderLayout.WEST);
+        rodapeResumo.add(simularAlternativas, BorderLayout.EAST);
+        aba.add(rodapeResumo, BorderLayout.SOUTH);
         return aba;
     }
 
@@ -252,7 +255,34 @@ public class TelaPrincipal {
     }
 
     // ===================== ligação das ações (controlador) =====================
+    public String pedirPrioridadesSimulacao(List<Despesa> despesas) {
+    StringBuilder texto = new StringBuilder(
+            "Digite uma prioridade para cada despesa, separando por vírgulas.\n"
+            + "Use 0 para essencial e um número positivo para opcional.\n"
+            + "Exemplo para quatro despesas: 0, 0, 3, 1\n\n");
 
+    for (int i = 0; i < despesas.size(); i++) {
+        texto.append(i + 1).append(". ")
+                .append(despesas.get(i).getDescricao()).append("\n");
+    }
+
+    return JOptionPane.showInputDialog(
+            janela, texto.toString(), "Simular alternativas",
+            JOptionPane.QUESTION_MESSAGE);
+}
+
+    public void mostrarResultadoSimulacao(String texto) {
+    javax.swing.JTextArea resultado = new javax.swing.JTextArea(texto, 18, 48);
+    resultado.setEditable(false);
+    resultado.setCaretPosition(0);
+
+    JOptionPane.showMessageDialog(
+            janela, new JScrollPane(resultado), "Resultado da simulação",
+            JOptionPane.INFORMATION_MESSAGE);
+}
+    public void aoSimularAlternativas(Runnable acao) {
+    simularAlternativas.addActionListener(evento -> acao.run());
+}
     public void aoNovo(Runnable acao) {
         novo.addActionListener(evento -> acao.run());
     }
