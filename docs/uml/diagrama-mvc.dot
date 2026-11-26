@@ -20,7 +20,7 @@ digraph MVC {
 <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#F3E8F8">
 <tr><td><b>ControlePlanejamento</b></td></tr>
 <tr><td align="left" balign="left" sides="t" border="1">- planejamento: Planejamento<br/>- tela: TelaPrincipal  {readOnly}<br/>- arquivoAtual: Path</td></tr>
-<tr><td align="left" balign="left" sides="t" border="1">+ ControlePlanejamento(Planejamento, TelaPrincipal)<br/>+ iniciar(): void<br/>- cadastrarParticipante(): void<br/>- alterarParticipante(): void<br/>- excluirParticipante(): void<br/>- selecionarParticipante(): void<br/>- cadastrarDespesa(): void<br/>- salvarEdicaoDespesa(): void<br/>- excluirDespesa(): void<br/>- selecionarDespesa(): void<br/>- novo(): void<br/>- salvar(boolean): void<br/>- abrir(): void<br/>- converter(String, String): int<br/>- contarAcimaDoOrcamento(): int<br/>- atualizarTela(): void</td></tr>
+<tr><td align="left" balign="left" sides="t" border="1">+ ControlePlanejamento(Planejamento, TelaPrincipal)<br/>+ iniciar(): void<br/>- cadastrarParticipante(): void<br/>- alterarParticipante(): void<br/>- excluirParticipante(): void<br/>- selecionarParticipante(): void<br/>- cadastrarDespesa(): void<br/>- salvarEdicaoDespesa(): void<br/>- excluirDespesa(): void<br/>- selecionarDespesa(): void<br/>- simularAlternativas(): void<br/>- novo(): void<br/>- salvar(boolean): void<br/>- abrir(): void<br/>- converter(String, String): int<br/>- contarAcimaDoOrcamento(): int<br/>- atualizarTela(): void</td></tr>
 </table>>];
   }
 
@@ -30,7 +30,7 @@ digraph MVC {
 <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#E8F4F8">
 <tr><td><b>TelaPrincipal</b></td></tr>
 <tr><td align="left" balign="left" sides="t" border="1">- janela: JFrame<br/>- campos: JTextField, JComboBox, JList&lt;Participante&gt;<br/>- tabelas: JTable  <font color="#555555">(participantes, despesas, resumo)</font><br/>- botões: JButton  <font color="#555555">(Novo, Abrir, Salvar, Cadastrar...)</font><br/>- mensagem: JLabel</td></tr>
-<tr><td align="left" balign="left" sides="t" border="1">+ lerCodigo() / lerNome() / lerOrcamento(): String<br/>+ lerDescricao() / lerValor(): String<br/>+ tipoFixaSelecionado(): boolean<br/>+ lerCodigosSelecionados(): List&lt;Integer&gt;<br/>+ lerIndiceDespesa(): int<br/>+ aoCadastrarParticipante(Runnable): void<br/>+ aoCadastrarDespesa(Runnable): void<br/>+ aoSalvar(Runnable) / aoAbrir(Runnable): void<br/>+ ... <font color="#555555">(12 métodos aoX(Runnable) no total)</font><br/>+ mostrarPlanejamento(Planejamento): void<br/>+ preencherParticipante(Participante): void<br/>+ preencherDespesa(Despesa): void<br/>+ mostrarMensagem(String) / mostrarErro(String): void<br/>+ confirmar(String): boolean<br/>+ escolherArquivoParaAbrir(): Path<br/>+ escolherArquivoParaSalvar(): Path<br/>+ exibir(): void</td></tr>
+<tr><td align="left" balign="left" sides="t" border="1">+ lerCodigo() / lerNome() / lerOrcamento(): String<br/>+ lerDescricao() / lerValor(): String<br/>+ tipoFixaSelecionado(): boolean<br/>+ lerCodigosSelecionados(): List&lt;Integer&gt;<br/>+ lerIndiceDespesa(): int<br/>+ aoCadastrarParticipante(Runnable): void<br/>+ aoCadastrarDespesa(Runnable): void<br/>+ aoSalvar(Runnable) / aoAbrir(Runnable): void<br/>+ aoSimularAlternativas(Runnable): void<br/>+ ... <font color="#555555">(13 métodos aoX(Runnable) no total)</font><br/>+ mostrarPlanejamento(Planejamento): void<br/>+ preencherParticipante(Participante): void<br/>+ preencherDespesa(Despesa): void<br/>+ mostrarMensagem(String) / mostrarErro(String): void<br/>+ pedirPrioridadesSimulacao(List&lt;Despesa&gt;): String<br/>+ mostrarResultadoSimulacao(Planejamento, Resultado): void<br/>+ confirmar(String): boolean<br/>+ escolherArquivoParaAbrir(): Path<br/>+ escolherArquivoParaSalvar(): Path<br/>+ exibir(): void</td></tr>
 </table>>];
   }
 
@@ -40,6 +40,11 @@ digraph MVC {
 <table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#EAF3EC">
 <tr><td><b>Planejamento</b></td></tr>
 <tr><td align="left" sides="t" border="1"><font color="#555555">(detalhado no diagrama do modelo)</font></td></tr>
+</table>>];
+    Simulador [label=<
+<table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#F6EEF8">
+<tr><td><b>SimuladorAlternativas</b></td></tr>
+<tr><td align="left" balign="left" sides="t" border="1">+ simular(Planejamento, List&lt;Integer&gt;): Resultado</td></tr>
 </table>>];
   }
 
@@ -74,6 +79,11 @@ digraph MVC {
   Controle -> RepoArq [arrowhead=vee, style=dashed, label=" «create» "];
   Repo -> RepoArq     [dir=back, arrowtail=onormal, style=dashed, arrowsize=1.3];
   Repo -> Planejamento [arrowhead=vee, style=dashed, label=" «use» ", constraint=false];
+
+  // Objetivo extra: o controlador cria o simulador; a tela mostra o Resultado
+  Controle -> Simulador [arrowhead=vee, style=dashed, label=" «create» "];
+  Simulador -> Planejamento [arrowhead=vee, style=dashed, label=" «use» ", constraint=false];
+  Tela -> Simulador [arrowhead=vee, style=dashed, label=" «use» Resultado "];
 
   { rank=same; Controle; Tela; }
 }

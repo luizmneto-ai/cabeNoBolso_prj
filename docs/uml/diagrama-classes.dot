@@ -42,6 +42,19 @@ digraph Classes {
 <tr><td align="left" balign="left" sides="t" border="1">- valorUnitario: int</td></tr>
 <tr><td align="left" balign="left" sides="t" border="1">+ DespesaPorPessoa(String, int, Collection&lt;Integer&gt;)<br/>+ getTipo(): String<br/>+ getValorInformado(): int<br/>+ calcularTotal(int): int<br/>+ calcularCota(int): int</td></tr>
 </table>>];
+
+    Simulador [label=<
+<table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#F6EEF8">
+<tr><td><b>SimuladorAlternativas</b><br/><font point-size="10">(objetivo extra)</font></td></tr>
+<tr><td align="left" balign="left" sides="t" border="1">+ simular(Planejamento, List&lt;Integer&gt; prioridades): Resultado<br/>- calcularTotais(List&lt;Participante&gt;, List&lt;Despesa&gt;): Map&lt;Integer, Long&gt;<br/>- calcularExcessos(List&lt;Participante&gt;, Map&lt;Integer, Long&gt;): Map&lt;Integer, Long&gt;</td></tr>
+<tr><td align="left" balign="left" sides="t" border="1"><font point-size="9" color="#555555">prioridade 0 = essencial; &gt; 0 = opcional (até 10)<br/>testa as 2^n combinações e guarda a de maior soma<br/>de prioridades que respeita todos os orçamentos</font></td></tr>
+</table>>];
+
+    Resultado [label=<
+<table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#F6EEF8">
+<tr><td><font point-size="10">«record»</font><br/><b>SimuladorAlternativas.Resultado</b></td></tr>
+<tr><td align="left" balign="left" sides="t" border="1">+ viavel: boolean<br/>+ mantidas: List&lt;Despesa&gt;<br/>+ retiradas: List&lt;Despesa&gt;<br/>+ totalPorParticipante: Map&lt;Integer, Long&gt;<br/>+ excessoPorParticipante: Map&lt;Integer, Long&gt;</td></tr>
+</table>>];
   }
 
   subgraph cluster_persistence {
@@ -77,4 +90,9 @@ digraph Classes {
 
   // Dependência: o repositório grava e lê o Planejamento
   RepositorioPlanejamento -> Planejamento [arrowhead=vee, style=dashed, label=" «use» ", constraint=false];
+
+  // Simulador: lê o planejamento (sem alterar) e devolve um Resultado
+  Planejamento -> Simulador [dir=back, arrowtail=vee, style=dashed, label=" «use» (só leitura) "];
+  Simulador -> Resultado [arrowhead=vee, style=dashed, label=" «create» "];
+  Resultado -> Despesa [arrowhead=vee, headlabel="0..*", label=" mantidas / retiradas ", constraint=false];
 }
