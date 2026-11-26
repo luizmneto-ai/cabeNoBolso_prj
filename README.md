@@ -26,15 +26,13 @@ Atividade final da disciplina **Programação Orientada a Objetos (N685)** — U
 
 ## Equipe
 
-<!-- TODO: preencher a coluna "Principais contribuições" de cada integrante -->
-
 | Integrante | Matrícula | Principais contribuições |
 |---|---|---|
-| Luiz Monteiro Neto | 2642512 | |
-| Samuel Diogenes Silva Holanda | 2641631 | |
-| Letícia Gomes da Silva | 2630010 | |
-| João Pedro Queiroz Ribeiro | 2641620 | |
-| Vinícius Ferreira Cavalcante | 2642541 | |
+| Luiz Monteiro Neto | 2642512 |Arquitetura MVC, implementação do rateio em centavos, persistência em arquivo e coordenação técnica.|
+| Samuel Diogenes Silva Holanda | 2641631 |Desenvolvimento das classes de participantes e despesas e implementação das validações do sistema.|
+| Letícia Gomes da Silva | 2630010 |Execução dos testes no aplicativo, captura das evidências e revisão do relatório técnico.|
+| João Pedro Queiroz Ribeiro | 2641620 |Desenvolvimento da classe VerificacaoModelo, automação dos sete cenários de teste e conferência das evidências.|
+| Vinícius Ferreira Cavalcante | 2642541 |Elaboração dos diagramas UML e consolidação do relatório técnico.|
 
 ---
 
