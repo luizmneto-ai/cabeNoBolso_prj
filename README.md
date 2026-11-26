@@ -275,7 +275,7 @@ O simulador mantém as despesas essenciais e testa as combinações de opcionais
 
 ## Uso de IA e referências
 
-- Os requisitos seguem o enunciado da disciplina e a trilha do Prof. Tulio. O código-fonte e os diagramas UML foram gerados com apoio de IA generativa (Claude, Anthropic) a partir desses requisitos; a equipe revisou, executou e testou o código e produziu as evidências em `docs/evidencias/`. O ChatGPT apoiou a revisão do texto do relatório.
+- Os requisitos seguem o enunciado da disciplina e a trilha do Prof. Tulio. O código-fonte e os diagramas UML foram gerados com apoio de IA generativa (Claude, Anthropic) a partir desses requisitos, e o simulador de alternativas também foi desenvolvido com participação de IA; a equipe revisou, executou e testou o código e produziu as evidências em `docs/evidencias/`. O ChatGPT apoiou a revisão do texto do relatório.
 - Material da disciplina: trilha de apoio de POO (revisões 01 a 15), Prof. Tulio Rodrigues Ribeiro.
 - Oracle. *The Java Tutorials* e documentação da API Java SE 25: Swing, Collections, Exceptions, Serialization.
 - <!-- TODO: outras fontes usadas, no padrão ABNT no relatório -->
