@@ -1,0 +1,66 @@
+
+== 1. Caso de referência
+Pessoa        Total  Orçamento  Situação
+Ana        R$ 75,00   R$ 70,00  Excede em R$ 5,00
+Bruno      R$ 60,00   R$ 60,00  Dentro do orçamento
+Carla      R$ 75,00   R$ 70,00  Excede em R$ 5,00
+Custo total: R$ 210,00
+  [OK]      Ana total R$ 75,00
+  [OK]      Bruno total R$ 60,00
+  [OK]      Carla total R$ 75,00
+  [OK]      Bruno paga 0 na atividade
+  [OK]      Ana excede R$ 5,00
+  [OK]      Carla excede R$ 5,00
+  [OK]      Bruno dentro (igual ao limite)
+  [OK]      Custo total R$ 210,00
+
+== 2. Centavos no rateio (R$ 100,00 fixa para 1, 2 e 3)
+  [OK]      Código 1 paga R$ 33,34
+  [OK]      Código 2 paga R$ 33,33
+  [OK]      Código 3 paga R$ 33,33
+  [OK]      Soma R$ 100,00
+
+== 3. Entrada ou vínculo inválido
+  [OK]      Despesa sem participantes -> recusado: Selecione pelo menos um participante.
+  [OK]      Valor negativo -> recusado: O valor da despesa deve ser positivo.
+  [OK]      Valor zero -> recusado: O valor da despesa deve ser positivo.
+  [OK]      Descrição vazia -> recusado: Informe a descrição da despesa.
+  [OK]      Participante repetido -> recusado: Um participante foi selecionado mais de uma vez.
+  [OK]      Código não cadastrado -> recusado: O código 9 não está cadastrado.
+  [OK]      Código duplicado -> recusado: Já existe participante com o código 1.
+  [OK]      Nome vazio -> recusado: Informe o nome do participante.
+  [OK]      Orçamento negativo -> recusado: O orçamento deve ser maior ou igual a zero.
+  [OK]      Edição inválida -> recusado: O valor da despesa deve ser positivo.
+  [OK]      Valor digitado "noventa" -> recusado: Digite um número inteiro em centavos.
+  [OK]      Nº de despesas inalterado
+  [OK]      Custo total inalterado
+  [OK]      Nome e orçamento de Ana inalterados
+
+== 4. Alteração de orçamento (Ana -> R$ 80,00)
+  [OK]      Ana continua com R$ 75,00
+  [OK]      Ana agora dentro do orçamento
+
+== 5. Exclusão de despesa (Atividade recreativa)
+  [OK]      Ana paga R$ 60,00
+  [OK]      Bruno paga R$ 60,00
+  [OK]      Carla paga R$ 60,00
+  [OK]      Total R$ 180,00
+
+== 6. Salvar e reiniciar
+  [OK]      3 participantes recuperados
+  [OK]      4 despesas recuperadas (sem duplicar)
+  [OK]      Custo total R$ 210,00
+  [OK]      Ana total R$ 75,00
+  [OK]      Vínculos preservados (atividade: Ana e Carla)
+
+== 7. Problema no arquivo
+  [OK]      Arquivo ausente -> "Arquivo ou pasta do planejamento não encontrado."
+  [OK]      Arquivo inválido -> "Não foi possível acessar o arquivo do planejamento."
+  [OK]      Planejamento em uso preservado
+  [OK]      Planejamento vazio pode ser iniciado
+
+== Extra. Exclusão de participante vinculado
+  [OK]      Excluir Bruno com despesas -> recusado: Bruno participa de "Transporte" e não pode ser excluído.
+  [OK]      Bruno continua cadastrado
+
+Resultado: 43 verificações OK, 0 falharam.

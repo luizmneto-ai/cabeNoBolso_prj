@@ -26,15 +26,13 @@ Atividade final da disciplina **Programação Orientada a Objetos (N685)** — U
 
 ## Equipe
 
-<!-- TODO: preencher a coluna "Principais contribuições" de cada integrante -->
-
 | Integrante | Matrícula | Principais contribuições |
 |---|---|---|
-| Luiz Monteiro Neto | 2642512 | |
-| Samuel Diogenes Silva Holanda | 2641631 | |
-| Letícia Gomes da Silva | 2630010 | |
-| João Pedro Queiroz Ribeiro | 2641620 | |
-| Vinícius Ferreira Cavalcante | 2642541 | |
+| Luiz Monteiro Neto | 2642512 |Arquitetura MVC, implementação do rateio em centavos, persistência em arquivo e coordenação técnica.|
+| Samuel Diogenes Silva Holanda | 2641631 |Desenvolvimento das classes de participantes e despesas e implementação das validações do sistema.|
+| Letícia Gomes da Silva | 2630010 |Execução dos testes no aplicativo, captura das evidências e revisão do relatório técnico.|
+| João Pedro Queiroz Ribeiro | 2641620 |Desenvolvimento da classe VerificacaoModelo, automação dos sete cenários de teste e conferência das evidências.|
+| Vinícius Ferreira Cavalcante | 2642541 |Elaboração dos diagramas UML e consolidação do relatório técnico.|
 
 ---
 
@@ -166,9 +164,15 @@ java -cp out cabenobolso.Main
 
 ## Modelagem (UML)
 
-![Diagrama de classes](docs/uml/diagrama-classes.png)
+**Modelo e persistência** — classes, atributos, métodos e relações:
 
-<!-- TODO: inserir a imagem do diagrama atualizado em docs/uml/ -->
+![Diagrama de classes do modelo e da persistência](docs/uml/diagrama-classes.png)
+
+**Organização MVC** — como `Main`, visão, controlador, modelo e persistência se ligam:
+
+![Diagrama de classes da organização MVC](docs/uml/diagrama-mvc.png)
+
+Os arquivos-fonte dos diagramas (`.dot`, formato Graphviz) e as versões em SVG estão em `docs/uml/`. Para gerar de novo: `dot -Tpng -Gdpi=170 docs/uml/diagrama-classes.dot -o docs/uml/diagrama-classes.png`.
 
 Principais decisões de modelagem:
 
@@ -223,17 +227,17 @@ Dados obrigatórios da seção 4 do enunciado.
 
 ## Como reproduzir os testes
 
-<!-- TODO: preencher a coluna "Obtido" e o link da evidência após executar cada teste -->
-
 | # | Cenário | Como executar | Resultado esperado | Obtido | Evidência |
 |---|---|---|---|---|---|
-| 1 | **Caso de referência** | Roteiro acima | Ana e Carla R$ 75,00 (excedem R$ 5,00), Bruno R$ 60,00 (dentro); total R$ 210,00 | | `docs/evidencias/01.png` |
-| 2 | **Centavos no rateio** | Despesa fixa de R$ 100,00 para os códigos 1, 2 e 3 | R$ 33,34 / R$ 33,33 / R$ 33,33; soma R$ 100,00 | | `docs/evidencias/02.png` |
-| 3 | **Entrada ou vínculo inválido** | Tentar salvar despesa sem participantes, com valor negativo ou com campo vazio | Mensagem de erro; dados anteriores inalterados | | `docs/evidencias/03.png` |
-| 4 | **Alteração de orçamento** | No caso de referência, alterar o orçamento de Ana para R$ 80,00 | Ana continua com R$ 75,00, agora dentro do limite | | `docs/evidencias/04.png` |
-| 5 | **Exclusão de despesa** | No caso original, excluir "Atividade recreativa" | R$ 60,00 por pessoa; total R$ 180,00 | | `docs/evidencias/05.png` |
-| 6 | **Salvar e reiniciar** | Salvar o caso, fechar e abrir a aplicação, carregar | Todos os dados, vínculos e resultados recuperados, sem duplicar registros | | `docs/evidencias/06.png` |
-| 7 | **Problema no arquivo** | Carregar arquivo inexistente ou inválido (ex.: um `.txt` renomeado para `.dat`) | Mensagem clara; o planejamento em uso é preservado; é possível iniciar um planejamento vazio | | `docs/evidencias/07.png` |
+| 1 | **Caso de referência** | Roteiro acima | Ana e Carla R$ 75,00 (excedem R$ 5,00), Bruno R$ 60,00 (dentro); total R$ 210,00 | ✅ Conforme o esperado | [participantes](docs/evidencias/swing-participantes.png), [despesas](docs/evidencias/swing-despesas.png), [resumo](docs/evidencias/swing-resumo.png) |
+| 2 | **Centavos no rateio** | Despesa fixa de R$ 100,00 para os códigos 1, 2 e 3 | R$ 33,34 / R$ 33,33 / R$ 33,33; soma R$ 100,00 | ✅ Conforme o esperado | [teste-2-centavos.png](docs/evidencias/teste-2-centavos.png) |
+| 3 | **Entrada ou vínculo inválido** | Tentar salvar despesa sem participantes, com valor negativo ou com campo vazio | Mensagem de erro; dados anteriores inalterados | ✅ Conforme o esperado | [teste-3-vinculo-invalido.png](docs/evidencias/teste-3-vinculo-invalido.png) |
+| 4 | **Alteração de orçamento** | No caso de referência, alterar o orçamento de Ana para R$ 80,00 | Ana continua com R$ 75,00, agora dentro do limite | ✅ Conforme o esperado | [teste-4-alteracao-orcamento.png](docs/evidencias/teste-4-alteracao-orcamento.png) |
+| 5 | **Exclusão de despesa** | No caso original, excluir "Atividade recreativa" | R$ 60,00 por pessoa; total R$ 180,00 | ✅ Conforme o esperado | [teste-5-exclusao-despesa.png](docs/evidencias/teste-5-exclusao-despesa.png) |
+| 6 | **Salvar e reiniciar** | Salvar o caso, fechar e abrir a aplicação, carregar | Todos os dados, vínculos e resultados recuperados, sem duplicar registros | ✅ Conforme o esperado | [teste-6-salvar-reiniciar.png](docs/evidencias/teste-6-salvar-reiniciar.png) (arquivo usado: [teste-6-planejamento.dat](docs/evidencias/teste-6-planejamento.dat)) |
+| 7 | **Problema no arquivo** | Carregar arquivo inexistente ou inválido (ex.: um `.txt` renomeado para `.dat`) | Mensagem clara; o planejamento em uso é preservado; é possível iniciar um planejamento vazio | ✅ Conforme o esperado | [teste-7-arquivo-invalido.png](docs/evidencias/teste-7-arquivo-invalido.png) (arquivo usado: [arquivo-invalido.dat](docs/evidencias/arquivo-invalido.dat)) |
+
+A verificação automática abaixo também confirma os sete cenários: **43 verificações OK, 0 falharam** — saída completa em [resultado-testes.txt](docs/evidencias/resultado-testes.txt) e capturas do terminal em [teste-parte-1.png](docs/evidencias/teste-parte-1.png) e [teste-parte-2.png](docs/evidencias/teste-parte-2.png).
 
 ### Verificação automática do modelo (terminal)
 
