@@ -5,8 +5,21 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * MODELO — simulador de alternativas (objetivo extra, seção 7 do enunciado).
+ *
+ * Cada despesa recebe uma prioridade: 0 = essencial (sempre mantida) e um inteiro
+ * positivo = opcional. Com até 10 opcionais, testa todas as 2^n combinações
+ * (no máximo 1.024) e escolhe a de maior soma de prioridades que caiba no
+ * orçamento de todos. Em empate, fica a primeira combinação válida encontrada.
+ * O planejamento recebido apenas é lido, nunca alterado.
+ */
 public class SimuladorAlternativas {
 
+    /**
+     * Resultado da simulação. Se viavel for false, as essenciais já estouram algum
+     * orçamento: mantidas e retiradas ficam vazias e excessoPorParticipante traz o excesso.
+     */
     public record Resultado(
             boolean viavel,
             List<Despesa> mantidas,

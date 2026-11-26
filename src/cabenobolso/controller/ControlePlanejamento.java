@@ -1,10 +1,9 @@
 package cabenobolso.controller;
 
+import cabenobolso.model.Despesa;
 import cabenobolso.model.Participante;
 import cabenobolso.model.Planejamento;
-import cabenobolso.model.Despesa;
 import cabenobolso.model.SimuladorAlternativas;
-import java.util.ArrayList;
 import cabenobolso.persistence.RepositorioArquivo;
 import cabenobolso.persistence.RepositorioPlanejamento;
 import cabenobolso.view.TelaPrincipal;
@@ -12,6 +11,7 @@ import cabenobolso.view.TelaPrincipal;
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -62,83 +62,7 @@ public class ControlePlanejamento {
     }
 
     // ===================== Participantes =====================
-    private void simularAlternativas() {
-    List<Despesa> despesas = planejamento.getDespesas();
 
-    if (despesas.isEmpty()) {
-        tela.mostrarErro("Cadastre pelo menos uma despesa para simular.");
-        return;
-    }
-
-    String entrada = tela.pedirPrioridadesSimulacao(despesas);
-    if (entrada == null) {
-        return;
-    }
-
-    try {
-        List<Integer> prioridades = new ArrayList<>();
-        for (String valor : entrada.split(",", -1)) {
-            prioridades.add(Integer.parseInt(valor.trim()));
-        }
-
-        SimuladorAlternativas.Resultado resultado =
-                new SimuladorAlternativas().simular(planejamento, prioridades);
-
-        StringBuilder texto = new StringBuilder();
-
-        if (!resultado.viavel()) {
-            texto.append("Sem solução. As despesas essenciais já ultrapassam o orçamento.\n\n");
-
-            for (Participante pessoa : planejamento.getParticipantes()) {
-                Long excesso = resultado.excessoPorParticipante().get(pessoa.getCodigo());
-                if (excesso != null) {
-                    texto.append(pessoa.getNome()).append(" excede em ")
-                            .append(reaisSimulacao(excesso)).append("\n");
-                }
-            }
-        } else {
-            texto.append("Despesas mantidas:\n");
-            for (Despesa despesa : resultado.mantidas()) {
-                texto.append("- ").append(despesa.getDescricao()).append("\n");
-            }
-
-            texto.append("\nDespesas retiradas:\n");
-            if (resultado.retiradas().isEmpty()) {
-                texto.append("Nenhuma.\n");
-            }
-            for (Despesa despesa : resultado.retiradas()) {
-                texto.append("- ").append(despesa.getDescricao()).append("\n");
-            }
-
-            texto.append("\nAntes → Depois por participante:\n");
-            long totalDepois = 0;
-
-            for (Participante pessoa : planejamento.getParticipantes()) {
-                int codigo = pessoa.getCodigo();
-                long depois = resultado.totalPorParticipante().get(codigo);
-                totalDepois += depois;
-
-                texto.append(pessoa.getNome()).append(": ")
-                        .append(reaisSimulacao(planejamento.calcularTotalParticipante(codigo)))
-                        .append(" → ").append(reaisSimulacao(depois)).append("\n");
-            }
-
-            texto.append("\nTotal do grupo: ")
-                    .append(reaisSimulacao(planejamento.calcularTotal()))
-                    .append(" → ").append(reaisSimulacao(totalDepois));
-        }
-
-        tela.mostrarResultadoSimulacao(texto.toString());
-    } catch (NumberFormatException erro) {
-        tela.mostrarErro("Digite números inteiros separados por vírgulas, como 0, 0, 3, 1.");
-    } catch (IllegalArgumentException erro) {
-        tela.mostrarErro(erro.getMessage());
-    }
-}
-
-private static String reaisSimulacao(long centavos) {
-    return String.format("R$ %d,%02d", centavos / 100, centavos % 100);
-}
     private void cadastrarParticipante() {
         try {
             int codigo = converter(tela.lerCodigo(), "Código");
@@ -244,6 +168,41 @@ private static String reaisSimulacao(long centavos) {
         if (indice >= 0) {
             tela.preencherDespesa(planejamento.getDespesas().get(indice));
         }
+    }
+
+    // ===================== Simulador de alternativas (objetivo extra) =====================
+
+    /**
+     * Pede uma prioridade por despesa (0 = essencial, positivo = opcional), roda o
+     * simulador e mostra o resultado. O planejamento original não é alterado.
+     */
+    private void simularAlternativas() {
+        List<Despesa> despesas = planejamento.getDespesas();
+        if (despesas.isEmpty()) {
+            tela.mostrarErro("Cadastre pelo menos uma despesa para simular.");
+            return;
+        }
+
+        String entrada = tela.pedirPrioridadesSimulacao(despesas);
+        if (entrada == null) {
+            return;   // a pessoa cancelou
+        }
+
+        SimuladorAlternativas.Resultado resultado;
+        try {
+            List<Integer> prioridades = new ArrayList<>();
+            for (String valor : entrada.split(",", -1)) {
+                prioridades.add(Integer.parseInt(valor.trim()));
+            }
+            resultado = new SimuladorAlternativas().simular(planejamento, prioridades);
+        } catch (NumberFormatException erro) {
+            tela.mostrarErro("Digite números inteiros separados por vírgulas, como 0, 0, 3, 1.");
+            return;
+        } catch (IllegalArgumentException erro) {
+            tela.mostrarErro(erro.getMessage());
+            return;
+        }
+        tela.mostrarResultadoSimulacao(planejamento, resultado);
     }
 
     // ===================== Arquivo =====================

@@ -63,4 +63,26 @@ Custo total: R$ 210,00
   [OK]      Excluir Bruno com despesas -> recusado: Bruno participa de "Transporte" e não pode ser excluído.
   [OK]      Bruno continua cadastrado
 
-Resultado: 43 verificações OK, 0 falharam.
+== Bônus 1. Simulador no caso de referência
+  [OK]      Há solução
+  [OK]      Retira só a sobremesa
+  [OK]      Ana fica com R$ 65,00
+  [OK]      Bruno fica com R$ 50,00
+  [OK]      Carla fica com R$ 65,00
+  [OK]      Planejamento original preservado (R$ 210,00)
+
+== Bônus 2. Sem solução (orçamento de Ana R$ 40,00)
+  [OK]      Sem solução
+  [OK]      Ana excede em R$ 10,00
+
+== Bônus 3. Cenário extra (orçamento de Ana R$ 60,00)
+  [OK]      Retira só a atividade recreativa
+  [OK]      Ana fica com R$ 60,00
+  [OK]      Bruno fica com R$ 60,00
+  [OK]      Carla fica com R$ 60,00
+
+== Bônus 4. Prioridades inválidas
+  [OK]      Quantidade diferente de despesas -> recusado: Informe uma prioridade para cada despesa.
+  [OK]      Prioridade negativa -> recusado: A prioridade deve ser zero ou positiva.
+
+Resultado: 57 verificações OK, 0 falharam.

@@ -3,6 +3,7 @@ package cabenobolso.view;
 import cabenobolso.model.Despesa;
 import cabenobolso.model.Participante;
 import cabenobolso.model.Planejamento;
+import cabenobolso.model.SimuladorAlternativas;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -26,6 +27,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -82,7 +84,8 @@ public class TelaPrincipal {
     private final DefaultTableModel modeloResumo = tabelaSomenteLeitura("Pessoa");
     private final JTable tabelaResumo = new JTable(modeloResumo);
     private final JLabel custoTotal = new JLabel("Custo total: R$ 0,00");
-    private final JButton simularAlternativas = new JButton("Simular alternativas");    
+    private final JButton simularAlternativas = new JButton("Simular alternativas");
+
     // ----- rodapé -----
     private final JLabel mensagem = new JLabel("Cadastre os participantes e depois as despesas.");
 
@@ -255,34 +258,7 @@ public class TelaPrincipal {
     }
 
     // ===================== ligação das ações (controlador) =====================
-    public String pedirPrioridadesSimulacao(List<Despesa> despesas) {
-    StringBuilder texto = new StringBuilder(
-            "Digite uma prioridade para cada despesa, separando por vírgulas.\n"
-            + "Use 0 para essencial e um número positivo para opcional.\n"
-            + "Exemplo para quatro despesas: 0, 0, 3, 1\n\n");
 
-    for (int i = 0; i < despesas.size(); i++) {
-        texto.append(i + 1).append(". ")
-                .append(despesas.get(i).getDescricao()).append("\n");
-    }
-
-    return JOptionPane.showInputDialog(
-            janela, texto.toString(), "Simular alternativas",
-            JOptionPane.QUESTION_MESSAGE);
-}
-
-    public void mostrarResultadoSimulacao(String texto) {
-    javax.swing.JTextArea resultado = new javax.swing.JTextArea(texto, 18, 48);
-    resultado.setEditable(false);
-    resultado.setCaretPosition(0);
-
-    JOptionPane.showMessageDialog(
-            janela, new JScrollPane(resultado), "Resultado da simulação",
-            JOptionPane.INFORMATION_MESSAGE);
-}
-    public void aoSimularAlternativas(Runnable acao) {
-    simularAlternativas.addActionListener(evento -> acao.run());
-}
     public void aoNovo(Runnable acao) {
         novo.addActionListener(evento -> acao.run());
     }
@@ -297,6 +273,10 @@ public class TelaPrincipal {
 
     public void aoSalvarComo(Runnable acao) {
         salvarComo.addActionListener(evento -> acao.run());
+    }
+
+    public void aoSimularAlternativas(Runnable acao) {
+        simularAlternativas.addActionListener(evento -> acao.run());
     }
 
     public void aoCadastrarParticipante(Runnable acao) {
@@ -452,6 +432,69 @@ public class TelaPrincipal {
     public boolean confirmar(String pergunta) {
         int resposta = JOptionPane.showConfirmDialog(janela, pergunta, "Confirmar", JOptionPane.YES_NO_OPTION);
         return resposta == JOptionPane.YES_OPTION;
+    }
+
+    // ----- simulador de alternativas (objetivo extra) -----
+
+    /** Pede as prioridades (texto separado por vírgulas), ou null se a pessoa cancelar. */
+    public String pedirPrioridadesSimulacao(List<Despesa> despesas) {
+        StringBuilder texto = new StringBuilder(
+                "Digite uma prioridade para cada despesa, separando por vírgulas.\n"
+                + "Use 0 para essencial e um número positivo para opcional.\n"
+                + "Exemplo para quatro despesas: 0, 0, 3, 1\n\n");
+        for (int i = 0; i < despesas.size(); i++) {
+            texto.append(i + 1).append(". ").append(despesas.get(i).getDescricao()).append("\n");
+        }
+        return JOptionPane.showInputDialog(
+                janela, texto.toString(), "Simular alternativas", JOptionPane.QUESTION_MESSAGE);
+    }
+
+    /** Mostra despesas mantidas e retiradas e os totais antes e depois. Só apresentação. */
+    public void mostrarResultadoSimulacao(Planejamento planejamento, SimuladorAlternativas.Resultado resultado) {
+        StringBuilder texto = new StringBuilder();
+
+        if (!resultado.viavel()) {
+            texto.append("Sem solução. As despesas essenciais já ultrapassam o orçamento.\n\n");
+            for (Participante pessoa : planejamento.getParticipantes()) {
+                Long excesso = resultado.excessoPorParticipante().get(pessoa.getCodigo());
+                if (excesso != null) {
+                    texto.append(pessoa.getNome()).append(" excede em ").append(reais(excesso)).append("\n");
+                }
+            }
+        } else {
+            texto.append("Despesas mantidas:\n");
+            for (Despesa despesa : resultado.mantidas()) {
+                texto.append("- ").append(despesa.getDescricao()).append("\n");
+            }
+
+            texto.append("\nDespesas retiradas:\n");
+            if (resultado.retiradas().isEmpty()) {
+                texto.append("Nenhuma.\n");
+            }
+            for (Despesa despesa : resultado.retiradas()) {
+                texto.append("- ").append(despesa.getDescricao()).append("\n");
+            }
+
+            texto.append("\nAntes → Depois por participante:\n");
+            long totalDepois = 0;
+            for (Participante pessoa : planejamento.getParticipantes()) {
+                int codigo = pessoa.getCodigo();
+                long depois = resultado.totalPorParticipante().get(codigo);
+                totalDepois += depois;
+                texto.append(pessoa.getNome()).append(": ")
+                        .append(reais(planejamento.calcularTotalParticipante(codigo)))
+                        .append(" → ").append(reais(depois)).append("\n");
+            }
+
+            texto.append("\nTotal do grupo: ").append(reais(planejamento.calcularTotal()))
+                    .append(" → ").append(reais(totalDepois));
+        }
+
+        JTextArea area = new JTextArea(texto.toString(), 18, 48);
+        area.setEditable(false);
+        area.setCaretPosition(0);
+        JOptionPane.showMessageDialog(
+                janela, new JScrollPane(area), "Resultado da simulação", JOptionPane.INFORMATION_MESSAGE);
     }
 
     /** Devolve o arquivo escolhido para abrir, ou null se a pessoa cancelar. */

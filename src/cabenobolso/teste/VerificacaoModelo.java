@@ -3,6 +3,7 @@ package cabenobolso.teste;
 import cabenobolso.model.Despesa;
 import cabenobolso.model.Participante;
 import cabenobolso.model.Planejamento;
+import cabenobolso.model.SimuladorAlternativas;
 import cabenobolso.persistence.RepositorioArquivo;
 import cabenobolso.persistence.RepositorioPlanejamento;
 
@@ -17,8 +18,9 @@ import java.util.List;
  * ("validem a UML e os cálculos antes de conectá-los às telas", seção 3).
  * Como na revisão 14, o modelo é usado sem a janela.
  *
- * Executa o caso de referência (seção 4) e os testes adicionais 2 a 7,
- * imprimindo [OK] ou [FALHOU] em cada verificação.
+ * Executa o caso de referência (seção 4), os testes adicionais 2 a 7 e os
+ * cenários do simulador de alternativas (objetivo extra), imprimindo [OK] ou
+ * [FALHOU] em cada verificação.
  *
  * Uso:
  *   java -cp out cabenobolso.teste.VerificacaoModelo
@@ -46,6 +48,7 @@ public class VerificacaoModelo {
         teste6SalvarEReiniciar();
         teste7ProblemaNoArquivo();
         testeExtraExclusaoParticipanteVinculado();
+        testeBonusSimulador();
 
         System.out.println();
         System.out.println("Resultado: " + ok + " verificações OK, " + falhas + " falharam.");
@@ -196,6 +199,48 @@ public class VerificacaoModelo {
         Planejamento plano = casoReferencia();
         esperarErro("Excluir Bruno com despesas", () -> plano.removerParticipante(2));
         verificar("Bruno continua cadastrado", plano.getParticipantes().size(), 3);
+    }
+
+    /** Objetivo extra: prioridades 0, 0, 3, 1 (transporte e almoço essenciais). */
+    static void testeBonusSimulador() {
+        List<Integer> prioridades = List.of(0, 0, 3, 1);
+        SimuladorAlternativas simulador = new SimuladorAlternativas();
+
+        titulo("Bônus 1. Simulador no caso de referência");
+        Planejamento plano = casoReferencia();
+        SimuladorAlternativas.Resultado r = simulador.simular(plano, prioridades);
+        verificarBool("Há solução", r.viavel());
+        verificarBool("Retira só a sobremesa", descricoes(r.retiradas()).equals(List.of("Sobremesa")));
+        verificar("Ana fica com R$ 65,00", r.totalPorParticipante().get(1), 6500);
+        verificar("Bruno fica com R$ 50,00", r.totalPorParticipante().get(2), 5000);
+        verificar("Carla fica com R$ 65,00", r.totalPorParticipante().get(3), 6500);
+        verificar("Planejamento original preservado (R$ 210,00)", plano.calcularTotal(), 21000);
+
+        titulo("Bônus 2. Sem solução (orçamento de Ana R$ 40,00)");
+        plano = casoReferencia();
+        plano.alterarParticipante(1, "Ana", 4000);
+        r = simulador.simular(plano, prioridades);
+        verificarBool("Sem solução", !r.viavel());
+        verificar("Ana excede em R$ 10,00", r.excessoPorParticipante().get(1), 1000);
+
+        titulo("Bônus 3. Cenário extra (orçamento de Ana R$ 60,00)");
+        plano = casoReferencia();
+        plano.alterarParticipante(1, "Ana", 6000);
+        r = simulador.simular(plano, prioridades);
+        verificarBool("Retira só a atividade recreativa",
+                descricoes(r.retiradas()).equals(List.of("Atividade recreativa")));
+        verificar("Ana fica com R$ 60,00", r.totalPorParticipante().get(1), 6000);
+        verificar("Bruno fica com R$ 60,00", r.totalPorParticipante().get(2), 6000);
+        verificar("Carla fica com R$ 60,00", r.totalPorParticipante().get(3), 6000);
+
+        titulo("Bônus 4. Prioridades inválidas");
+        Planejamento referencia = casoReferencia();
+        esperarErro("Quantidade diferente de despesas", () -> simulador.simular(referencia, List.of(0, 0, 3)));
+        esperarErro("Prioridade negativa", () -> simulador.simular(referencia, List.of(0, 0, -1, 1)));
+    }
+
+    static List<String> descricoes(List<Despesa> despesas) {
+        return despesas.stream().map(Despesa::getDescricao).toList();
     }
 
     // ---------------- apoio ----------------
