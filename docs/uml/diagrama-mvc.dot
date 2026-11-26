@@ -1,0 +1,79 @@
+// Diagrama de classes — organização MVC (Cabe no Bolso)
+// Gerar: dot -Tpng -Gdpi=170 diagrama-mvc.dot -o diagrama-mvc.png
+digraph MVC {
+  graph [rankdir=TB, fontname="DejaVu Sans", fontsize=13, nodesep=0.6, ranksep=0.8, pad=0.25, bgcolor="white", newrank=true];
+  node  [shape=plain, fontname="DejaVu Sans", fontsize=11];
+  edge  [fontname="DejaVu Sans", fontsize=10, color="#333333"];
+
+  subgraph cluster_root {
+    label=<<b>cabenobolso</b>>; labeljust=l; style="rounded,dashed"; color="#7a7a7a";
+    Main [label=<
+<table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#F2F2F2">
+<tr><td><b>Main</b></td></tr>
+<tr><td align="left" balign="left" sides="t" border="1">+ main(String[]): void  <font color="#555555">(SwingUtilities.invokeLater)</font></td></tr>
+</table>>];
+  }
+
+  subgraph cluster_controller {
+    label=<<b>cabenobolso.controller</b>>; labeljust=l; style="rounded,dashed"; color="#7a7a7a";
+    Controle [label=<
+<table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#F3E8F8">
+<tr><td><b>ControlePlanejamento</b></td></tr>
+<tr><td align="left" balign="left" sides="t" border="1">- planejamento: Planejamento<br/>- tela: TelaPrincipal  {readOnly}<br/>- arquivoAtual: Path</td></tr>
+<tr><td align="left" balign="left" sides="t" border="1">+ ControlePlanejamento(Planejamento, TelaPrincipal)<br/>+ iniciar(): void<br/>- cadastrarParticipante(): void<br/>- alterarParticipante(): void<br/>- excluirParticipante(): void<br/>- selecionarParticipante(): void<br/>- cadastrarDespesa(): void<br/>- salvarEdicaoDespesa(): void<br/>- excluirDespesa(): void<br/>- selecionarDespesa(): void<br/>- novo(): void<br/>- salvar(boolean): void<br/>- abrir(): void<br/>- converter(String, String): int<br/>- contarAcimaDoOrcamento(): int<br/>- atualizarTela(): void</td></tr>
+</table>>];
+  }
+
+  subgraph cluster_view {
+    label=<<b>cabenobolso.view</b>>; labeljust=l; style="rounded,dashed"; color="#7a7a7a";
+    Tela [label=<
+<table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#E8F4F8">
+<tr><td><b>TelaPrincipal</b></td></tr>
+<tr><td align="left" balign="left" sides="t" border="1">- janela: JFrame<br/>- campos: JTextField, JComboBox, JList&lt;Participante&gt;<br/>- tabelas: JTable  <font color="#555555">(participantes, despesas, resumo)</font><br/>- botões: JButton  <font color="#555555">(Novo, Abrir, Salvar, Cadastrar...)</font><br/>- mensagem: JLabel</td></tr>
+<tr><td align="left" balign="left" sides="t" border="1">+ lerCodigo() / lerNome() / lerOrcamento(): String<br/>+ lerDescricao() / lerValor(): String<br/>+ tipoFixaSelecionado(): boolean<br/>+ lerCodigosSelecionados(): List&lt;Integer&gt;<br/>+ lerIndiceDespesa(): int<br/>+ aoCadastrarParticipante(Runnable): void<br/>+ aoCadastrarDespesa(Runnable): void<br/>+ aoSalvar(Runnable) / aoAbrir(Runnable): void<br/>+ ... <font color="#555555">(12 métodos aoX(Runnable) no total)</font><br/>+ mostrarPlanejamento(Planejamento): void<br/>+ preencherParticipante(Participante): void<br/>+ preencherDespesa(Despesa): void<br/>+ mostrarMensagem(String) / mostrarErro(String): void<br/>+ confirmar(String): boolean<br/>+ escolherArquivoParaAbrir(): Path<br/>+ escolherArquivoParaSalvar(): Path<br/>+ exibir(): void</td></tr>
+</table>>];
+  }
+
+  subgraph cluster_model {
+    label=<<b>cabenobolso.model</b>>; labeljust=l; style="rounded,dashed"; color="#7a7a7a";
+    Planejamento [label=<
+<table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#EAF3EC">
+<tr><td><b>Planejamento</b></td></tr>
+<tr><td align="left" sides="t" border="1"><font color="#555555">(detalhado no diagrama do modelo)</font></td></tr>
+</table>>];
+  }
+
+  subgraph cluster_persistence {
+    label=<<b>cabenobolso.persistence</b>>; labeljust=l; style="rounded,dashed"; color="#7a7a7a";
+    Repo [label=<
+<table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#E8EEF8">
+<tr><td><font point-size="10">«interface»</font><br/><b>RepositorioPlanejamento</b></td></tr>
+<tr><td align="left" balign="left" sides="t" border="1">+ salvar(Planejamento): void<br/>+ carregar(): Planejamento</td></tr>
+</table>>];
+    RepoArq [label=<
+<table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#E8EEF8">
+<tr><td><b>RepositorioArquivo</b></td></tr>
+<tr><td align="left" sides="t" border="1">+ RepositorioArquivo(Path)</td></tr>
+</table>>];
+  }
+
+  // Main cria as três partes
+  Main -> Controle     [arrowhead=vee, style=dashed, label=" «create» "];
+  Main -> Tela         [arrowhead=vee, style=dashed, label=" «create» "];
+  Main -> Planejamento [arrowhead=vee, style=dashed, label=" «create» "];
+
+  // Controlador conhece a tela e o modelo (associações navegáveis)
+  Controle -> Tela         [arrowhead=vee, taillabel="1", headlabel="1", label=" tela "];
+  Controle -> Planejamento [arrowhead=vee, taillabel="1", headlabel="1", label=" planejamento "];
+
+  // A tela recebe ações do controlador e apenas apresenta o modelo
+  Tela -> Planejamento [arrowhead=vee, style=dashed, label=" «use» mostra "];
+
+  // Controlador usa o contrato de persistência e cria a implementação
+  Controle -> Repo    [arrowhead=vee, style=dashed, label=" «use» "];
+  Controle -> RepoArq [arrowhead=vee, style=dashed, label=" «create» "];
+  Repo -> RepoArq     [dir=back, arrowtail=onormal, style=dashed, arrowsize=1.3];
+  Repo -> Planejamento [arrowhead=vee, style=dashed, label=" «use» ", constraint=false];
+
+  { rank=same; Controle; Tela; }
+}

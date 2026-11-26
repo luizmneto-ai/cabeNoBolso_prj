@@ -166,9 +166,15 @@ java -cp out cabenobolso.Main
 
 ## Modelagem (UML)
 
-![Diagrama de classes](docs/uml/diagrama-classes.png)
+**Modelo e persistência** — classes, atributos, métodos e relações:
 
-<!-- TODO: inserir a imagem do diagrama atualizado em docs/uml/ -->
+![Diagrama de classes do modelo e da persistência](docs/uml/diagrama-classes.png)
+
+**Organização MVC** — como `Main`, visão, controlador, modelo e persistência se ligam:
+
+![Diagrama de classes da organização MVC](docs/uml/diagrama-mvc.png)
+
+Os arquivos-fonte dos diagramas (`.dot`, formato Graphviz) e as versões em SVG estão em `docs/uml/`. Para gerar de novo: `dot -Tpng -Gdpi=170 docs/uml/diagrama-classes.dot -o docs/uml/diagrama-classes.png`.
 
 Principais decisões de modelagem:
 

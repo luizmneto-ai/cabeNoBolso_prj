@@ -1,0 +1,80 @@
+// Diagrama de classes — modelo e persistência (Cabe no Bolso)
+// Gerar: dot -Tpng -Gdpi=200 diagrama-classes.dot -o diagrama-classes.png
+digraph Classes {
+  graph [rankdir=TB, fontname="DejaVu Sans", fontsize=13, nodesep=0.5, ranksep=0.75, pad=0.25, bgcolor="white"];
+  node  [shape=plain, fontname="DejaVu Sans", fontsize=11];
+  edge  [fontname="DejaVu Sans", fontsize=10, color="#333333"];
+
+  subgraph cluster_model {
+    label=<<b>cabenobolso.model</b>>; labeljust=l; style="rounded,dashed"; color="#7a7a7a";
+
+    Planejamento [label=<
+<table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#EAF3EC">
+<tr><td><font point-size="10">«Serializable»</font><br/><b>Planejamento</b></td></tr>
+<tr><td align="left" balign="left" sides="t" border="1">- titulo: String<br/>- participantes: Map&lt;Integer, Participante&gt;  <font color="#555555">(TreeMap)</font><br/>- despesas: List&lt;Despesa&gt;  <font color="#555555">(ArrayList)</font></td></tr>
+<tr><td align="left" balign="left" sides="t" border="1">+ Planejamento()<br/>+ Planejamento(String)<br/>+ getTitulo(): String<br/>+ alterarTitulo(String): void<br/>+ cadastrarParticipante(int, String, int): void<br/>+ alterarParticipante(int, String, int): void<br/>+ removerParticipante(int): void<br/>+ buscarParticipante(int): Participante<br/>+ getParticipantes(): List&lt;Participante&gt;<br/>+ cadastrarDespesaFixa(String, int, Collection&lt;Integer&gt;): void<br/>+ cadastrarDespesaPorPessoa(String, int, Collection&lt;Integer&gt;): void<br/>+ editarDespesaFixa(int, String, int, Collection&lt;Integer&gt;): void<br/>+ editarDespesaPorPessoa(int, String, int, Collection&lt;Integer&gt;): void<br/>+ removerDespesa(int): void<br/>+ getDespesas(): List&lt;Despesa&gt;<br/>+ calcularTotal(): long<br/>+ calcularTotalParticipante(int): int<br/>+ cabeNoOrcamento(int): boolean<br/>+ calcularExcesso(int): int</td></tr>
+</table>>];
+
+    Participante [label=<
+<table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#EAF3EC">
+<tr><td><font point-size="10">«Serializable»</font><br/><b>Participante</b></td></tr>
+<tr><td align="left" balign="left" sides="t" border="1">- codigo: int  {readOnly}<br/>- nome: String<br/>- orcamento: int  <font color="#555555">(centavos)</font></td></tr>
+<tr><td align="left" balign="left" sides="t" border="1">+ Participante(int, String, int)<br/>+ getCodigo(): int<br/>+ getNome(): String<br/>+ getOrcamento(): int<br/>+ alterarNome(String): void<br/>+ alterarOrcamento(int): void<br/>+ cabeNoOrcamento(int): boolean<br/>+ calcularExcesso(int): int</td></tr>
+</table>>];
+
+    Despesa [label=<
+<table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#FFF4E0">
+<tr><td><font point-size="10">«Serializable»</font><br/><b><i>Despesa</i></b><br/><font point-size="10">{abstract}</font></td></tr>
+<tr><td align="left" balign="left" sides="t" border="1">- descricao: String<br/>- codigosParticipantes: TreeSet&lt;Integer&gt;</td></tr>
+<tr><td align="left" balign="left" sides="t" border="1">+ Despesa(String, Collection&lt;Integer&gt;)<br/>+ getDescricao(): String<br/>+ getCodigosParticipantes(): Set&lt;Integer&gt;<br/>+ getQuantidadeParticipantes(): int<br/>+ envolve(int): boolean<br/>+ calcularTotal(): int<br/><i>+ getTipo(): String</i><br/><i>+ getValorInformado(): int</i><br/><i>+ calcularTotal(int quantidade): int</i><br/><i>+ calcularCota(int codigo): int</i></td></tr>
+</table>>];
+
+    DespesaFixa [label=<
+<table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#FFF4E0">
+<tr><td><b>DespesaFixa</b></td></tr>
+<tr><td align="left" balign="left" sides="t" border="1">- valorTotal: int</td></tr>
+<tr><td align="left" balign="left" sides="t" border="1">+ DespesaFixa(String, int, Collection&lt;Integer&gt;)<br/>+ getTipo(): String<br/>+ getValorInformado(): int<br/>+ calcularTotal(int): int<br/>+ calcularCota(int): int  <font color="#555555">(sobra de centavos)</font></td></tr>
+</table>>];
+
+    DespesaPorPessoa [label=<
+<table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#FFF4E0">
+<tr><td><b>DespesaPorPessoa</b></td></tr>
+<tr><td align="left" balign="left" sides="t" border="1">- valorUnitario: int</td></tr>
+<tr><td align="left" balign="left" sides="t" border="1">+ DespesaPorPessoa(String, int, Collection&lt;Integer&gt;)<br/>+ getTipo(): String<br/>+ getValorInformado(): int<br/>+ calcularTotal(int): int<br/>+ calcularCota(int): int</td></tr>
+</table>>];
+  }
+
+  subgraph cluster_persistence {
+    label=<<b>cabenobolso.persistence</b>>; labeljust=l; style="rounded,dashed"; color="#7a7a7a";
+
+    RepositorioPlanejamento [label=<
+<table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#E8EEF8">
+<tr><td><font point-size="10">«interface»</font><br/><b>RepositorioPlanejamento</b></td></tr>
+<tr><td align="left" balign="left" sides="t" border="1">+ salvar(Planejamento): void  <font color="#555555">throws IOException</font><br/>+ carregar(): Planejamento  <font color="#555555">throws IOException</font></td></tr>
+</table>>];
+
+    RepositorioArquivo [label=<
+<table border="1" cellborder="0" cellspacing="0" cellpadding="4" bgcolor="#E8EEF8">
+<tr><td><b>RepositorioArquivo</b></td></tr>
+<tr><td align="left" balign="left" sides="t" border="1">- arquivo: Path</td></tr>
+<tr><td align="left" balign="left" sides="t" border="1">+ RepositorioArquivo(Path)<br/>+ getArquivo(): Path<br/>+ salvar(Planejamento): void<br/>+ carregar(): Planejamento</td></tr>
+</table>>];
+  }
+
+  // Composição: o planejamento contém participantes e despesas
+  Planejamento -> Participante [dir=back, arrowtail=diamond, taillabel="1", headlabel="0..*", label=" participantes "];
+  Planejamento -> Despesa      [dir=back, arrowtail=diamond, taillabel="1", headlabel="0..*", label=" despesas "];
+
+  // Despesa referencia participantes pelo código
+  Despesa -> Participante [arrowhead=vee, taillabel="0..*", headlabel="1..*", label=" envolve (por código) ", constraint=false];
+
+  // Herança (desenhada de cima para baixo: a seta vazada aponta para Despesa)
+  Despesa -> DespesaFixa      [dir=back, arrowtail=onormal, arrowsize=1.3];
+  Despesa -> DespesaPorPessoa [dir=back, arrowtail=onormal, arrowsize=1.3];
+
+  // Realização da interface (seta vazada tracejada aponta para a interface)
+  RepositorioPlanejamento -> RepositorioArquivo [dir=back, arrowtail=onormal, style=dashed, arrowsize=1.3];
+
+  // Dependência: o repositório grava e lê o Planejamento
+  RepositorioPlanejamento -> Planejamento [arrowhead=vee, style=dashed, label=" «use» ", constraint=false];
+}
