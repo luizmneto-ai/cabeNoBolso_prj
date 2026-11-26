@@ -272,7 +272,7 @@ O simulador mantém as despesas essenciais e testa as combinações de opcionais
 
 ## Uso de IA e referências
 
-- Ferramentas de IA foram usadas como apoio. Todo o código foi revisado e compreendido pela equipe, que conduziu a modelagem, as decisões e a análise dos resultados. <!-- TODO: descrever de forma honesta onde e como a IA foi usada -->
+- Os requisitos seguem o enunciado da disciplina e a trilha do Prof. Tulio. O código-fonte e os diagramas UML foram gerados com apoio de IA generativa (Claude, Anthropic) a partir desses requisitos; a equipe revisou, executou e testou o código e produziu as evidências em `docs/evidencias/`. O ChatGPT apoiou a revisão do texto do relatório.
 - Material da disciplina: trilha de apoio de POO (revisões 01 a 15), Prof. Tulio Rodrigues Ribeiro.
 - Oracle. *The Java Tutorials* e documentação da API Java SE 25: Swing, Collections, Exceptions, Serialization.
 - <!-- TODO: outras fontes usadas, no padrão ABNT no relatório -->
