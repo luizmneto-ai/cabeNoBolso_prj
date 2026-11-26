@@ -258,24 +258,15 @@ java -cp out cabenobolso.teste.VerificacaoModelo --gerar-dados
 
 ## Objetivo extra — simulador de alternativas
 
-<!-- TODO: manter esta seção só se a equipe implementar o bônus; caso contrário, remover -->
+Na aba *Resumo, clique em **Simular alternativas*. Digite uma prioridade para cada despesa, na ordem exibida. Use 0 para despesas essenciais e um número inteiro positivo para opcionais. O simulador aceita até 10 despesas opcionais.
 
-Classifica as despesas em **essenciais** e **opcionais**. Cada opcional recebe uma prioridade inteira positiva. Para até dez opcionais, o simulador mantém todas as essenciais e busca a combinação de opcionais com **maior soma de prioridades** que respeite o orçamento de cada participante, sem alterar o planejamento original.
+O simulador mantém as despesas essenciais e testa as combinações de opcionais. Entre as que cabem no orçamento de todos, escolhe a de maior soma de prioridades. Em caso de empate, mantém a primeira combinação válida encontrada com essa pontuação. A simulação preserva o planejamento original.
 
-| Cenário | Resultado esperado |
-|---|---|
-| Caso de referência: transporte e almoço essenciais; atividade (prioridade 3) e sobremesa (prioridade 1) opcionais | Retirar a sobremesa e manter a atividade: Ana e Carla R$ 65,00, Bruno R$ 50,00, total R$ 180,00 |
-| Mesmo caso com orçamento de Ana em R$ 40,00 | Sem solução: as essenciais de Ana custam R$ 50,00 (excesso de R$ 10,00) |
-| Caso extra da equipe <!-- TODO --> | Comparação antes/depois: despesas mantidas, retiradas e novos totais |
-
-Requisitos do simulador (seção 7 do enunciado):
-
-- Exibir as despesas **mantidas** e **retiradas** e os **novos totais**, sem alterar o planejamento original. <!-- TODO: confirmar na tela -->
-- Quando as essenciais não couberem, indicar o **excesso** e a **ausência de solução**. <!-- TODO -->
-- Qualquer **empate ótimo** (mesma soma de prioridades) é aceito como solução. <!-- TODO: dizer qual critério de desempate a equipe usou -->
-- Incluir um **caso extra** com comparação antes/depois e os testes no relatório e no repositório. <!-- TODO -->
-
-**Algoritmo:** <!-- TODO: descrever, ex.: busca exaustiva das 2^n combinações de opcionais (n ≤ 10 → no máximo 1.024), descartando as que estouram algum orçamento e guardando a de maior prioridade -->
+| Teste | Resultado observado | Evidência |
+|---|---|---|
+| Caso de referência (0,0,3,1) | Manteve a atividade recreativa e retirou a sobremesa. Ana e Carla ficaram com R$ 65,00 cada, e Bruno com R$ 50,00. O total caiu de R$ 210,00 para R$ 180,00. | [Print](docs/evidencias/bonus-1-caso-referencia.png) |
+| Caso sem solução (Ana com orçamento de R$ 40,00) | Transporte e almoço já custavam R$ 50,00 para Ana. O simulador informou que ela excedia o orçamento em R$ 10,00. | [Print](docs/evidencias/bonus-2-sem-solucao.png) |
+| Cenário extra (Ana com orçamento de R$ 60,00) | Manteve a sobremesa e retirou a atividade recreativa. Os três ficaram com R$ 60,00 cada. O total caiu de R$ 210,00 para R$ 180,00. | [Print](docs/evidencias/bonus-3-cenario-extra.png) |
 
 ---
 
