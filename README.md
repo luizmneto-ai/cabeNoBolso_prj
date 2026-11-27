@@ -270,6 +270,9 @@ O simulador mantém as despesas essenciais e testa as combinações de opcionais
 | Caso de referência (0,0,3,1) | Manteve a atividade recreativa e retirou a sobremesa. Ana e Carla ficaram com R$ 65,00 cada, e Bruno com R$ 50,00. O total caiu de R$ 210,00 para R$ 180,00. | [Print](docs/evidencias/bonus-1-caso-referencia.png) |
 | Caso sem solução (Ana com orçamento de R$ 40,00) | Transporte e almoço já custavam R$ 50,00 para Ana. O simulador informou que ela excedia o orçamento em R$ 10,00. | [Print](docs/evidencias/bonus-2-sem-solucao.png) |
 | Cenário extra (Ana com orçamento de R$ 60,00) | Manteve a sobremesa e retirou a atividade recreativa. Os três ficaram com R$ 60,00 cada. O total caiu de R$ 210,00 para R$ 180,00. | [Print](docs/evidencias/bonus-3-cenarioextra.png) |
+| Prioridades inválidas (texto `abc`) | O simulador recusou a entrada com a mensagem "Digite números inteiros separados por vírgulas, como 0, 0, 3, 1." O planejamento continuou igual. | [Print](docs/evidencias/bonus-4-entrada-invalida.png) |
+
+Prints tirados na interface em 27/11/2026, com a versão final do código.
 
 ---
 
